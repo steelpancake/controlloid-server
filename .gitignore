@@ -1,3 +1,5 @@
 cmake-build-*/
 .idea/
 ./src/linux/cmake-build-release/
+./dist/linux/bin/*
+!./dist/linux/bin/ws_handler
