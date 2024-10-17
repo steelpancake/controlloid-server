@@ -14,6 +14,8 @@ struct controller_event {
     const char *name;
 };
 
+FILE *logfile;
+
 static const struct controller_event REGISTERED_EVENTS[] = {
         // left analog stick
         {.type=EV_ABS, .code=ABS_X, .name="ANALOG_LX"},
@@ -21,6 +23,9 @@ static const struct controller_event REGISTERED_EVENTS[] = {
         // right analog stick
         {.type=EV_ABS, .code=ABS_RX, .name="ANALOG_RX"},
         {.type=EV_ABS, .code=ABS_RY, .name="ANALOG_RY"},
+        // left & right stick buttons
+        {.type=EV_KEY, .code=BTN_THUMBL, .name="BUTTON_STICKL"},
+        {.type=EV_KEY, .code=BTN_THUMBR, .name="BUTTON_STICKR"},
         // trigger buttons
         {.type=EV_KEY, .code=BTN_TL, .name="L1"},
         {.type=EV_KEY, .code=BTN_TL2, .name="L2"},
@@ -108,6 +113,7 @@ static void receive_events() {
         }
 
         if (event_index >= 0 && event_index < ARR_LENGTH(REGISTERED_EVENTS)) {
+            //fprintf(logfile, "%hu\n", event_index);
             controller_emit_event(event_index, event_value);
         }
     }
@@ -128,6 +134,11 @@ int main() {
         fprintf(stderr, "error: failed to create virtual controller\n");
         return -1;
     }
+
+    //logfile = fopen("x.log", "a+"); // a+ (create + append) option will allow appending which is useful in a log file
+    if (logfile == NULL) { exit(2); }
+    fprintf(logfile, "I'm logging something ...\n");
+
 
     send_events_mapping();
     receive_events();
